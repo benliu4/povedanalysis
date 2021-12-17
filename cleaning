@@ -1,0 +1,27 @@
+from geopy.geocoders import Nominatim
+from bs4 import BeautifulSoup
+import requests, re
+import pandas as pd
+import numpy as np
+from pprint import pprint
+
+def web_parser2(url):
+    r = requests.get(url)
+    data = r.json()
+
+    infoDict = {}
+
+    for school in data["features"][0:]:
+        infoDict[(school["properties"]["NCESSCH"])] = [school["geometry"]["coordinates"], school["properties"]["NCESSCH"], school["properties"]["OBJECTID"], school["properties"]["NAME"], school["properties"]["IPR_EST"], school["properties"]["IPR_SE"]]
+
+    dict2 = {key : infoDict[key] for key in infoDict if key[0] != "0"}
+
+    f = open("cleaned_api.json", "w")
+    json.dump(dict2, f)
+    f.close()
+
+    pprint(dict2)
+    
+    
+    ### Calls ###
+    web_parser2("https://opendata.arcgis.com/datasets/9bed2f9afd86406c88dea2f40e73a658_0.geojson")
